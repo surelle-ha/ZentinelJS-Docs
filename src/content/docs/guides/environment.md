@@ -13,9 +13,10 @@ SERVER_PORT = 8800
 JWT_SECRET = "test"
 
 DATABASE_HOST = "localhost"
-DATABASE_NAME = "ardeux"
+DATABASE_PORT = 3306
+DATABASE_NAME = "zentinel_db"
 DATABASE_USER = "root"
-DATABASE_PASS = "Izukishun@30"
+DATABASE_PASS = "Izukishun@30root"
 DATABASE_TYPE = "mysql"
 ```
 Below is an in-depth explanation for each environment variable. These environment variables play crucial roles in configuring and managing the application. By understanding the purpose and function of each variable, you can ensure that the application operates smoothly and efficiently. Each variable is designed to hold specific information or settings that are utilized throughout the application, contributing to its overall functionality and performance. 
@@ -54,6 +55,11 @@ Below is an in-depth explanation for each environment variable. These environmen
 - The hostname or IP address of the database server, used to establish a connection to the database.
 - **Type:** String
 - **Possible Values:** Any valid hostname or IP address (e.g., "`localhost`", "`192.168.1.100`")
+
+##### `DATABASE_PORT`
+- The port number of the database server, used to establish a connection to the database.
+- **Type:** Integer
+- **Possible Values:** Any valid port number (e.g., "`5432`" for PostgreSQL, "`3306`" for MySQL)
 
 ##### `DATABASE_NAME`
 - The name of the specific database to connect to within the database server.

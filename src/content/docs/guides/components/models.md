@@ -1,44 +1,114 @@
 ---
-title: Introduction
+title: Models
 description: An introduction to ZentinelJS
 ---
 
-Zentinel.JS is a backend framework / boilerplate built on top of Express.JS, structured to mirror the Laravel directory format for a familiar setup. It includes Artisan-like commands called 'Zentinel' to streamline development tasks, offering a powerful toolset for efficient backend operations and seamless integration.
+In ZentinelJS, the Model serves as the core component responsible for managing and interacting with the data of the application. It defines the structure of the application's data, encapsulating all data-related logic, including validation, manipulation, and business rules. By interacting with a database, the Model facilitates the retrieval, storage, and updating of data.
 
-## Recently Added
-The Project is constantly being optimized and updated. Here are the new features I recently implemented.
-- Rate Limit - a mechanism used to control the number of requests a server receives within a certain period of time. It helps to prevent abuse, ensure fair usage, and protect the server from being overwhelmed by excessive requests, which could lead to performance degradation or denial of service.
+Below is an example of a User model defined using Sequelize:
 ```js
-/* Default Rate Limit Configuration */
-const RateLimit = rateLimit({
-    /* 15 minutes */
-	windowMs: 15 * 60 * 1000, 
+const { Model, DataTypes } = require("sequelize");
 
-    /* Request Limit Per IP Per Window */
-	limit: 100, 
+module.exports = function (sequelize) {
+	class User extends Model {}
 
-    /* draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header */
-	standardHeaders: 'draft-7',
+	User.init(
+		{
+			first_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			middle_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			last_name: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			email: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: true,
+			},
+			password: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			}
+		},
+		{
+			sequelize,
+			modelName: "User",
+			timestamps: true,
+		}
+	);
 
-    /* Disable the `X-RateLimit-*` headers */
-	legacyHeaders: false, 
-})
+	return User;
+};
 ```
-- Sequelize ORM - Object/Relational Mapping (ORM) framework for Node. js applications. It enables JavaScript developers to work with relational databases, including support for features such as solid transaction support, relations, read replication, and more.
+A Model typically represents a table in the database. Each property of the Model corresponds to a column in the table. Models are defined using an Object-Relational Mapping (ORM) library, such as Sequelize in this example, which abstracts database operations and provides an intuitive interface for interacting with data.
 
-## Goal Checklist
-<input type="checkbox" checked disabled> Add Rate Limit <br>
-<input type="checkbox" checked disabled> Integrate Mongoose ORM <br>
-<input type="checkbox" checked disabled> Integrate Sequelize ORM <br>
-<input type="checkbox" disabled> Add Socket.io as Native Feature <br>
-<input type="checkbox" disabled> Add Logger Utility <br>
-<input type="checkbox" disabled> Recreate Zentinel CLI <br>
+##### Encapsulation and Organization
+By defining your Models in a modular way and exporting them, you create a well-organized and maintainable structure for managing your application's data. Each Model can be isolated in its own file, making it easier to navigate and update your data management logic.
 
-## Developer
-As a developer who constantly seeks to improve my development skills, my goal with Zentinel.JS is to create a powerful yet intuitive backend framework that simplifies the development process for fellow developers. I aim to provide a robust toolset that makes backend operations more efficient and enjoyable, ensuring that developers can focus on building great applications without getting bogged down by repetitive tasks.
+```js
+module.exports = function (sequelize) {
+	class User extends Model {}
 
-I envision Zentinel.JS as a go-to framework for developers who appreciate the structure and convenience of Laravel but prefer to work within the Node.js ecosystem. By combining the best aspects of both worlds, I hope to foster a community where developers can share their experiences, contribute to the project's growth, and continuously improve their craft. Ultimately, Zentinel.JS will empower developers to create scalable, secure, and high-performance applications with ease, making backend development more accessible and enjoyable for everyone.
+	User.init(
+		// Model definition
+	);
 
-## Developers
-Surelle-ha - [Github](https://github.com/surelle-ha)::
- _I'm currently looking for contributors to help improve project. Contact me on [Linkedin](https://www.linkedin.com/in/surellejs/), if you're interested._
+	return User;
+};
+```
+This approach supports clear separation of concerns, allowing you to define and manage your data structure independently from other application components.
+
+##### Data Definition and Validation
+Each property in the Model represents a column in the database table, with specific data types and constraints:
+- Data Types: Defines the type of data that can be stored in each field (e.g., `DataTypes.STRING`, `DataTypes.INTEGER`).
+- Constraints: Specifies rules for data entry, such as allowNull: false to ensure a field is not left empty, or unique: true to enforce uniqueness.
+
+```js
+first_name: {
+	type: DataTypes.STRING,
+	allowNull: false,
+}
+```
+These definitions ensure that your data adheres to the expected format and business rules before being saved to the database.
+
+##### Timestamps and Metadata
+The timestamps: true option automatically adds createdAt and updatedAt fields to your Model. These fields help track when records are created and last updated, providing useful metadata for managing data history.
+
+```js
+{
+	sequelize,
+	modelName: "User",
+	timestamps: true,
+}
+```
+
+##### Modular Codebase
+Exporting Models using module.exports allows you to keep your data definitions modular. Instead of placing all Models in a single file, you can create separate files for each Model, promoting a cleaner and more organized codebase.
+
+For example, you might have separate files for different entities:
+
+```js
+// models/user.js
+module.exports = function (sequelize) {
+	// User model definition
+};
+```
+```js
+// models/product.js
+module.exports = function (sequelize) {
+	// Product model definition
+};
+```
+##### Reusability
+Using module.exports for Model definitions enables easy reuse and integration across different parts of your application. You can import and use these Models wherever needed, ensuring consistent data management practices.
+
+Example:
+```js
+const { User, Product } = app.models; 
+```
